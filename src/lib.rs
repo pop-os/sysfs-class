@@ -6,5 +6,3 @@ mod hwmon;
 
 pub use sys_class::SysClass;
 mod sys_class;
-
-mod util;

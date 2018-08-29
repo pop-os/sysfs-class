@@ -2,7 +2,6 @@ use std::io::Result;
 use std::path::{Path, PathBuf};
 
 use SysClass;
-use util::trim_file;
 
 pub use self::fan::HwMonFan;
 mod fan;
@@ -34,7 +33,7 @@ impl SysClass for HwMon {
 
 impl HwMon {
     pub fn name(&self) -> Result<String> {
-        trim_file(self.path().join("name"))
+        self.trim_file("name")
     }
 
     pub fn fan<'a>(&'a self, id: u64) -> Result<HwMonFan<'a>> {

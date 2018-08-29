@@ -1,6 +1,8 @@
+use std::fmt::Display;
 use std::fs;
-use std::io::{Error, ErrorKind, Result};
+use std::io::{Error, ErrorKind, Read, Result, Write};
 use std::path::{Path, PathBuf};
+use std::str::FromStr;
 
 pub trait SysClass: Sized {
     /// Return the class of the sys object, the name of a folder in /sys/class
@@ -63,5 +65,45 @@ pub trait SysClass: Sized {
         self.path()
             .file_name().unwrap() // A valid path does not end in .., so safe
             .to_str().unwrap() // A valid path must be valid UTF-8, so safe
+    }
+
+    /// Read a file underneath the sys object
+    fn read_file<P: AsRef<Path>>(&self, name: P) -> Result<String> {
+        let mut data = String::new();
+
+        {
+            let path = self.path().join(name.as_ref());
+            let mut file = fs::OpenOptions::new().read(true).open(path)?;
+            file.read_to_string(&mut data)?;
+        }
+
+        Ok(data)
+    }
+
+    /// Parse a number from a file underneath the sys object
+    fn parse_file<F: FromStr, P: AsRef<Path>>(&self, name: P) -> Result<F> where F::Err: Display {
+        self.read_file(name)?.trim().parse().map_err(|err| {
+            Error::new(
+                ErrorKind::InvalidData,
+                format!("{}", err)
+            )
+        })
+    }
+
+    /// Read a file underneath the sys object and trim whitespace
+    fn trim_file<P: AsRef<Path>>(&self, name: P) -> Result<String> {
+        let data = self.read_file(name)?;
+        Ok(data.trim().to_string())
+    }
+
+    /// Write a file underneath the sys object
+    fn write_file<P: AsRef<Path>, S: AsRef<[u8]>>(&self, name: P, data: S) -> Result<()> {
+        {
+            let path = self.path().join(name.as_ref());
+            let mut file = fs::OpenOptions::new().write(true).open(path)?;
+            file.write_all(data.as_ref())?
+        }
+
+        Ok(())
     }
 }
