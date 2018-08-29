@@ -1,3 +1,4 @@
+use std::io::Result;
 use std::path::{Path, PathBuf};
 
 use SysClass;
@@ -18,5 +19,19 @@ impl SysClass for Block {
 
     fn path(&self) -> &Path {
         &self.path
+    }
+}
+
+impl Block {
+    pub fn partition(&self) -> Result<u8> {
+        self.parse_file("partition")
+    }
+
+    pub fn removable(&self) -> Result<bool> {
+        self.parse_file("removable")
+    }
+
+    pub fn size(&self) -> Result<u64> {
+        self.parse_file("partition")
     }
 }
