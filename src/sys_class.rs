@@ -21,10 +21,8 @@ pub trait SysClass: Sized {
 
     /// Create a sys object from a path, checking it for validity
     fn from_path(path: &Path) -> Result<Self> {
-        let canon = path.canonicalize()?;
-
         {
-            let parent = canon.parent().ok_or(Error::new(
+            let parent = path.parent().ok_or(Error::new(
                 ErrorKind::InvalidInput,
                 format!("{}: does not have parent", path.display())
             ))?;
@@ -38,9 +36,9 @@ pub trait SysClass: Sized {
             }
         }
 
-        fs::read_dir(&canon)?;
+        fs::read_dir(&path)?;
 
-        Ok(unsafe { Self::from_path_unchecked(canon) })
+        Ok(unsafe { Self::from_path_unchecked(path.to_owned()) })
     }
 
     /// Retrieve all of the object instances of a sys class
