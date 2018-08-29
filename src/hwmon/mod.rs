@@ -13,10 +13,10 @@ mod pwm;
 pub use self::temp::HwMonTemp;
 mod temp;
 
+/// A hardware monitoring device in /sys/class/hwmon
 pub struct HwMon {
     path: PathBuf,
 }
-
 
 impl SysClass for HwMon {
     fn class() -> &'static str {

@@ -2,6 +2,7 @@ use std::path::{Path, PathBuf};
 
 use SysClass;
 
+/// A block device in /sys/class/block
 pub struct Block {
     path: PathBuf
 }
