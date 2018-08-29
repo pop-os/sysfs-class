@@ -27,7 +27,7 @@ impl Block {
         self.parse_file("partition")
     }
 
-    pub fn removable(&self) -> Result<bool> {
+    pub fn removable(&self) -> Result<u8> {
         self.parse_file("removable")
     }
 
