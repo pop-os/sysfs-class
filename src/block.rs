@@ -32,6 +32,6 @@ impl Block {
     }
 
     pub fn size(&self) -> Result<u64> {
-        self.parse_file("partition")
+        self.parse_file("size")
     }
 }
