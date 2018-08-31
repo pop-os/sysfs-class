@@ -13,6 +13,7 @@ pub use self::temp::HwMonTemp;
 mod temp;
 
 /// A hardware monitoring device in /sys/class/hwmon
+#[derive(Clone)]
 pub struct HwMon {
     path: PathBuf,
 }

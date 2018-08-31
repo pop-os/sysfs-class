@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 use SysClass;
 
 /// A block device in /sys/class/block
+#[derive(Clone)]
 pub struct Block {
     path: PathBuf
 }
