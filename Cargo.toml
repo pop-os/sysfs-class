@@ -1,5 +1,5 @@
 [package]
-name = "sys_class"
+name = "sysfs-class"
 version = "0.1.0"
 authors = ["Jeremy Soller <jeremy@system76.com>"]
 
