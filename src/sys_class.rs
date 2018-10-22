@@ -4,6 +4,21 @@ use std::io::{Error, ErrorKind, Read, Result, Write};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
+#[macro_export]
+macro_rules! method {
+    ($file:tt $with:tt $out:tt) => {
+        pub fn $file(&self) -> Result<$out> {
+            self.$with(stringify!($file))
+        }
+    };
+
+    ($file:expr, $method:tt $with:tt $out:tt) => {
+        pub fn $method(&self) -> Result<$out> {
+            self.$with($file)
+        }
+    };
+}
+
 pub trait SysClass: Sized {
     /// Return the class of the sys object, the name of a folder in /sys/class
     fn class() -> &'static str;
