@@ -1,6 +1,6 @@
 [package]
 name = "sysfs-class"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Jeremy Soller <jeremy@system76.com>"]
 description = "Rust library for viewing /sys/class in an object-oriented format"
 license = "MIT"
