@@ -19,6 +19,21 @@ macro_rules! method {
     };
 }
 
+#[macro_export]
+macro_rules! set_method {
+    ($file:expr, $method:tt $with:ty) => {
+        pub fn $method(&self, input: $with) -> Result<()> {
+            self.write_file($file, format!("{}", input))
+        }
+    };
+
+    ($file:expr, $method:tt) => {
+        pub fn $method<B: AsRef<[u8]>>(&self, input: B) -> Result<()> {
+            self.write_file($file, input.as_ref())
+        }
+    };
+}
+
 pub trait SysClass: Sized {
     /// Return the class of the sys object, the name of a folder in /sys/class
     fn class() -> &'static str;
@@ -37,7 +52,7 @@ pub trait SysClass: Sized {
     /// Create a sys object from a path, checking it for validity
     fn from_path(path: &Path) -> Result<Self> {
         {
-            let parent = path.parent().ok_or(Error::new(
+            let parent = path.parent().ok_or_else(|| Error::new(
                 ErrorKind::InvalidInput,
                 format!("{}: does not have parent", path.display())
             ))?;
