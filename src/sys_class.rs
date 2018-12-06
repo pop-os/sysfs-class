@@ -83,6 +83,18 @@ pub trait SysClass: Sized {
         Ok(ret)
     }
 
+    /// Retrieve all of the object instances of a sys class, with a boxed iterator
+    fn iter() -> Box<Iterator<Item = Result<Self>>> where Self: 'static {
+        match fs::read_dir(Self::dir()) {
+            Ok(entries) => Box::new(
+                entries.map(|entry_res| entry_res.and_then(|entry| {
+                    Self::from_path(&entry.path())
+                }))
+            ),
+            Err(why) => Box::new(::std::iter::once(Err(why)))
+        }
+    }
+
     /// Create a sys object by id, checking it for validity
     fn new(id: &str) -> Result<Self> {
         Self::from_path(&Self::dir().join(id))
