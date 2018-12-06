@@ -19,8 +19,27 @@ macro_rules! method {
     };
 }
 
+#[macro_export]
+macro_rules! set_method {
+    ($file:expr, $method:tt $with:ty) => {
+        pub fn $method(&self, input: $with) -> Result<()> {
+            self.write_file($file, format!("{}", input))
+        }
+    };
+
+    ($file:expr, $method:tt) => {
+        pub fn $method<B: AsRef<[u8]>>(&self, input: B) -> Result<()> {
+            self.write_file($file, input.as_ref())
+        }
+    };
+}
+
 pub trait SysClass: Sized {
-    /// Return the class of the sys object, the name of a folder in /sys/class
+    /// Sets the base directory, which defaults to `class`.
+    fn base() -> &'static str {
+        "class"
+    }
+    /// Return the class of the sys object, the name of a folder in `/sys/${base}``
     fn class() -> &'static str;
 
     /// Create a sys object from an absolute path without checking path for validity
@@ -31,13 +50,13 @@ pub trait SysClass: Sized {
 
     /// Return the path to the sys objects, the full path of a folder in /sys/class
     fn dir() -> PathBuf {
-        Path::new("/sys/class").join(Self::class())
+        Path::new("/sys/").join(Self::base()).join(Self::class())
     }
 
     /// Create a sys object from a path, checking it for validity
     fn from_path(path: &Path) -> Result<Self> {
         {
-            let parent = path.parent().ok_or(Error::new(
+            let parent = path.parent().ok_or_else(|| Error::new(
                 ErrorKind::InvalidInput,
                 format!("{}: does not have parent", path.display())
             ))?;
@@ -66,6 +85,18 @@ pub trait SysClass: Sized {
         }
 
         Ok(ret)
+    }
+
+    /// Retrieve all of the object instances of a sys class, with a boxed iterator
+    fn iter() -> Box<Iterator<Item = Result<Self>>> where Self: 'static {
+        match fs::read_dir(Self::dir()) {
+            Ok(entries) => Box::new(
+                entries.map(|entry_res| entry_res.and_then(|entry| {
+                    Self::from_path(&entry.path())
+                }))
+            ),
+            Err(why) => Box::new(::std::iter::once(Err(why)))
+        }
     }
 
     /// Create a sys object by id, checking it for validity
