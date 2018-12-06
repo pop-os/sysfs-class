@@ -42,4 +42,11 @@ impl Leds {
             Ok(current)
         }
     }
+
+    /// Filters backlights to only include keyboard backlights
+    pub fn keyboard_backlights() -> Box<Iterator<Item = Result<Self>>> where Self: 'static {
+        Box::new(Self::iter().filter(|object| {
+            object.as_ref().ok().map_or(true, |o| o.id().contains("kbd_backlight"))
+        }))
+    }
 }
