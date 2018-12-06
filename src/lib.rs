@@ -17,5 +17,11 @@ mod hwmon;
 pub use leds::Leds;
 mod leds;
 
+pub use pci_bus::{PciDevice, PciDriver};
+mod pci_bus;
+
+pub use runtime_pm::{RuntimePM, RuntimePowerManagement};
+mod runtime_pm;
+
 pub use scsi_host::ScsiHost;
 mod scsi_host;

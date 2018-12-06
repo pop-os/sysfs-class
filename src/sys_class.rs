@@ -35,7 +35,11 @@ macro_rules! set_method {
 }
 
 pub trait SysClass: Sized {
-    /// Return the class of the sys object, the name of a folder in /sys/class
+    /// Sets the base directory, which defaults to `class`.
+    fn base() -> &'static str {
+        "class"
+    }
+    /// Return the class of the sys object, the name of a folder in `/sys/${base}``
     fn class() -> &'static str;
 
     /// Create a sys object from an absolute path without checking path for validity
@@ -46,7 +50,7 @@ pub trait SysClass: Sized {
 
     /// Return the path to the sys objects, the full path of a folder in /sys/class
     fn dir() -> PathBuf {
-        Path::new("/sys/class").join(Self::class())
+        Path::new("/sys/").join(Self::base()).join(Self::class())
     }
 
     /// Create a sys object from a path, checking it for validity
