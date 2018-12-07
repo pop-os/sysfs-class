@@ -17,6 +17,9 @@ mod hwmon;
 pub use leds::Leds;
 mod leds;
 
+pub use net::Net;
+mod net;
+
 pub use pci_bus::{PciDevice, PciDriver};
 mod pci_bus;
 
