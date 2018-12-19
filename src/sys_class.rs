@@ -126,10 +126,10 @@ pub trait SysClass: Sized {
 
     /// Parse a number from a file underneath the sys object
     fn parse_file<F: FromStr, P: AsRef<Path>>(&self, name: P) -> Result<F> where F::Err: Display {
-        self.read_file(name)?.trim().parse().map_err(|err| {
+        self.read_file(name.as_ref())?.trim().parse().map_err(|err| {
             Error::new(
                 ErrorKind::InvalidData,
-                format!("{}", err)
+                format!("{}: {}", name.as_ref().display(), err)
             )
         })
     }

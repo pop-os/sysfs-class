@@ -38,6 +38,21 @@ impl PciDriver {
     }
 }
 
+macro_rules! pci_devices {
+    ($( fn $file:tt -> $out:tt; )*) => {
+        $(
+            pub fn $file(&self) -> io::Result<$out> {
+                let v = self.read_file(stringify!($file))?;
+                $out::from_str_radix(v[2..].trim(), 16).map_err(|err| {
+                    io::Error::new(
+                        io::ErrorKind::InvalidData,
+                        format!("{}", err)
+                    )
+                })
+            }
+        )*
+    }
+}
 
 #[derive(Clone)]
 pub struct PciDevice {
@@ -63,10 +78,12 @@ impl SysClass for PciDevice {
 }
 
 impl PciDevice {
-    method!(class parse_file u32);
-    method!(device parse_file u16);
-    method!(revision parse_file u8);
-    method!(vendor parse_file u16);
+    pci_devices! {
+        fn class -> u32;
+        fn device -> u16;
+        fn revision -> u8;
+        fn vendor -> u16;
+    }
 
     pub fn driver(&self) -> io::Result<PciDriver> {
         fs::canonicalize(self.path.join("driver"))
