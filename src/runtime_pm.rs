@@ -1,6 +1,7 @@
 use std::io;
 
 /// Control whether a device uses, or does not use, runtime power management.
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum RuntimePowerManagement {
     On,
     Off,
