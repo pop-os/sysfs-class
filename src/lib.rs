@@ -1,9 +1,14 @@
+extern crate numtoa;
+
 pub use sys_class::SysClass;
 #[macro_use]
 mod sys_class;
 
 pub use backlight::Backlight;
 mod backlight;
+
+pub use brightness::Brightness;
+mod brightness;
 
 pub use block::Block;
 mod block;

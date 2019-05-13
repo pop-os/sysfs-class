@@ -1,5 +1,5 @@
 extern crate sysfs_class;
-use sysfs_class::{Leds, SysClass};
+use sysfs_class::{Brightness, Leds, SysClass};
 use std::io;
 
 fn main() -> io::Result<()> {

@@ -1,5 +1,5 @@
 extern crate sysfs_class;
-use sysfs_class::{Backlight, SysClass};
+use sysfs_class::{Backlight, Brightness, SysClass};
 use std::io;
 
 fn main() -> io::Result<()> {

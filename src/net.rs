@@ -1,4 +1,4 @@
-use std::io::{self, Result};
+use std::io::Result;
 use std::path::{Path, PathBuf};
 use SysClass;
 
@@ -22,7 +22,7 @@ impl SysClass for Net {
 }
 
 impl Net {
-    pub fn statistics<'a>(&'a self) -> NetStatistics<'a> {
+    pub fn statistics(&self) -> NetStatistics {
         NetStatistics { parent: self }
     }
 

@@ -1,5 +1,5 @@
 use std::fs;
-use std::io::{self, Result};
+use std::io;
 use std::path::{Path, PathBuf};
 use SysClass;
 use RuntimePM;
