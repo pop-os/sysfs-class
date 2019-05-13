@@ -20,15 +20,49 @@ macro_rules! method {
 }
 
 #[macro_export]
+macro_rules! trait_method {
+    ($file:tt $with:tt $out:tt) => {
+        fn $file(&self) -> Result<$out> {
+            self.$with(stringify!($file))
+        }
+    };
+
+    ($file:expr, $method:tt $with:tt $out:tt) => {
+        fn $method(&self) -> Result<$out> {
+            self.$with($file)
+        }
+    };
+}
+
+#[macro_export]
 macro_rules! set_method {
     ($file:expr, $method:tt $with:ty) => {
         pub fn $method(&self, input: $with) -> Result<()> {
-            self.write_file($file, format!("{}", input))
+            use numtoa::NumToA;
+            let mut buf = [0u8; 20];
+            self.write_file($file, input.numtoa_str(10, &mut buf))
         }
     };
 
     ($file:expr, $method:tt) => {
         pub fn $method<B: AsRef<[u8]>>(&self, input: B) -> Result<()> {
+            self.write_file($file, input.as_ref())
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! set_trait_method {
+    ($file:expr, $method:tt $with:ty) => {
+        fn $method(&self, input: $with) -> Result<()> {
+            use numtoa::NumToA;
+            let mut buf = [0u8; 20];
+            self.write_file($file, input.numtoa_str(10, &mut buf))
+        }
+    };
+
+    ($file:expr, $method:tt) => {
+        fn $method<B: AsRef<[u8]>>(&self, input: B) -> Result<()> {
             self.write_file($file, input.as_ref())
         }
     };

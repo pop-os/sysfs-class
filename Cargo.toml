@@ -7,3 +7,4 @@ license = "MIT"
 repository = "https://github.com/pop-os/sysfs-class"
 
 [dependencies]
+numtoa = "0.2.3"
