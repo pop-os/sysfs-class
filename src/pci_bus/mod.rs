@@ -82,6 +82,8 @@ impl PciDevice {
         fn class -> u32;
         fn device -> u16;
         fn revision -> u8;
+        fn subsystem_device -> u16;
+        fn subsystem_vendor -> u16;
         fn vendor -> u16;
     }
 
