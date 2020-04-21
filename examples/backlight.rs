@@ -1,6 +1,5 @@
-extern crate sysfs_class;
-use sysfs_class::{Backlight, Brightness, SysClass};
 use std::io;
+use sysfs_class::{Backlight, Brightness, SysClass};
 
 fn main() -> io::Result<()> {
     for dev in Backlight::all()? {

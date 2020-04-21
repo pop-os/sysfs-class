@@ -1,14 +1,13 @@
+use crate::SysClass;
 use std::io::Result;
 use std::path::{Path, PathBuf};
 
-use SysClass;
-
-pub type SlaveIter = Box<Iterator<Item = Result<PathBuf>>>;
+pub type SlaveIter = Box<dyn Iterator<Item = Result<PathBuf>>>;
 
 /// A block device in /sys/class/block
 #[derive(Clone, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Block {
-    path: PathBuf
+    path: PathBuf,
 }
 
 impl SysClass for Block {
@@ -31,9 +30,11 @@ impl Block {
     }
 
     pub fn children(&self) -> Result<Vec<Self>> {
-        let mut children = Block::all()?.into_iter()
+        let mut children = Block::all()?
+            .into_iter()
             .filter(|x| {
-                x.parent_device().map_or(false, |parent| parent.path() == self.path)
+                x.parent_device()
+                    .map_or(false, |parent| parent.path() == self.path)
             })
             .collect::<Vec<_>>();
         children.sort_unstable();
@@ -61,7 +62,7 @@ impl Block {
         if slaves_path.exists() {
             let res: Result<SlaveIter> = match slaves_path.read_dir() {
                 Ok(iter) => Ok(Box::new(iter.map(|entry| Ok(entry?.path())))),
-                Err(why) => Err(why)
+                Err(why) => Err(why),
             };
 
             Some(res)
@@ -197,7 +198,7 @@ impl Block {
         for schedule in self.read_file("queue/scheduler")?.split_whitespace() {
             let schedule = if schedule.starts_with('[') {
                 active = schedules.len();
-                &schedule[1..schedule.len()-1]
+                &schedule[1..schedule.len() - 1]
             } else {
                 schedule
             };
@@ -205,7 +206,10 @@ impl Block {
             schedules.push(schedule.to_owned());
         }
 
-        Ok(BlockScheduler { active: active as u8, schedules })
+        Ok(BlockScheduler {
+            active: active as u8,
+            schedules,
+        })
     }
 
     method!("queue/write_cache", queue_write_cache read_file String);
@@ -255,7 +259,7 @@ impl Block {
 
 pub struct BlockScheduler {
     schedules: Vec<String>,
-    active: u8
+    active: u8,
 }
 
 impl BlockScheduler {

@@ -1,13 +1,11 @@
+use crate::{RuntimePM, RuntimePowerManagement, SysClass};
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
-use SysClass;
-use RuntimePM;
-use RuntimePowerManagement;
 
 #[derive(Clone)]
 pub struct PciDriver {
-    path: PathBuf
+    path: PathBuf,
 }
 
 impl SysClass for PciDriver {
@@ -56,7 +54,7 @@ macro_rules! pci_devices {
 
 #[derive(Clone)]
 pub struct PciDevice {
-    path: PathBuf
+    path: PathBuf,
 }
 
 impl SysClass for PciDevice {
@@ -88,8 +86,7 @@ impl PciDevice {
     }
 
     pub fn driver(&self) -> io::Result<PciDriver> {
-        fs::canonicalize(self.path.join("driver"))
-            .map(|path| PciDriver { path })
+        fs::canonicalize(self.path.join("driver")).map(|path| PciDriver { path })
     }
 
     pub unsafe fn remove(&self) -> io::Result<()> {

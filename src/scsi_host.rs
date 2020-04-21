@@ -1,11 +1,11 @@
+use crate::SysClass;
 use std::io::{self, Result};
 use std::path::{Path, PathBuf};
-use SysClass;
 
 /// Fetch and modify SCSI host parameters.
 #[derive(Clone)]
 pub struct ScsiHost {
-    path: PathBuf
+    path: PathBuf,
 }
 
 impl SysClass for ScsiHost {
@@ -34,8 +34,14 @@ impl ScsiHost {
     /// Sets the power management profile for this SCSI host.
     ///
     /// Multiple profiles are given, and each profile is tried until one succeeds.
-    pub fn set_link_power_management_policy<'b>(&self, profiles: &[&'b str]) -> io::Result<&'b str> {
-        debug_assert!(!profiles.is_empty(), "at least one profile must be specified");
+    pub fn set_link_power_management_policy<'b>(
+        &self,
+        profiles: &[&'b str],
+    ) -> io::Result<&'b str> {
+        debug_assert!(
+            !profiles.is_empty(),
+            "at least one profile must be specified"
+        );
 
         let mut last_result = Ok(());
         let mut last_prof = "";
@@ -44,7 +50,7 @@ impl ScsiHost {
             last_result = self.write_file("link_power_management_policy", prof);
             last_prof = prof;
             if last_result.is_ok() {
-                break
+                break;
             }
         }
 

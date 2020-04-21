@@ -1,4 +1,3 @@
-extern crate sysfs_class;
 use sysfs_class::DmiId;
 
 fn main() {

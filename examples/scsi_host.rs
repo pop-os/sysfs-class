@@ -1,6 +1,5 @@
-extern crate sysfs_class;
-use sysfs_class::{ScsiHost, SysClass};
 use std::io;
+use sysfs_class::{ScsiHost, SysClass};
 
 fn main() -> io::Result<()> {
     for host in ScsiHost::all()? {

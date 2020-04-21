@@ -90,16 +90,18 @@ pub trait SysClass: Sized {
     /// Create a sys object from a path, checking it for validity
     fn from_path(path: &Path) -> Result<Self> {
         {
-            let parent = path.parent().ok_or_else(|| Error::new(
-                ErrorKind::InvalidInput,
-                format!("{}: does not have parent", path.display())
-            ))?;
+            let parent = path.parent().ok_or_else(|| {
+                Error::new(
+                    ErrorKind::InvalidInput,
+                    format!("{}: does not have parent", path.display()),
+                )
+            })?;
 
             let dir = Self::dir();
             if parent != dir {
                 return Err(Error::new(
                     ErrorKind::InvalidInput,
-                    format!("{}: is not a child of {}", path.display(), dir.display())
+                    format!("{}: is not a child of {}", path.display(), dir.display()),
                 ));
             }
         }
@@ -122,14 +124,15 @@ pub trait SysClass: Sized {
     }
 
     /// Retrieve all of the object instances of a sys class, with a boxed iterator
-    fn iter() -> Box<Iterator<Item = Result<Self>>> where Self: 'static {
+    fn iter() -> Box<dyn Iterator<Item = Result<Self>>>
+    where
+        Self: 'static,
+    {
         match fs::read_dir(Self::dir()) {
             Ok(entries) => Box::new(
-                entries.map(|entry_res| entry_res.and_then(|entry| {
-                    Self::from_path(&entry.path())
-                }))
+                entries.map(|entry_res| entry_res.and_then(|entry| Self::from_path(&entry.path()))),
             ),
-            Err(why) => Box::new(::std::iter::once(Err(why)))
+            Err(why) => Box::new(::std::iter::once(Err(why))),
         }
     }
 
@@ -141,8 +144,10 @@ pub trait SysClass: Sized {
     /// Return the id of the sys object
     fn id(&self) -> &str {
         self.path()
-            .file_name().unwrap() // A valid path does not end in .., so safe
-            .to_str().unwrap() // A valid path must be valid UTF-8, so safe
+            .file_name()
+            .unwrap() // A valid path does not end in .., so safe
+            .to_str()
+            .unwrap() // A valid path must be valid UTF-8, so safe
     }
 
     /// Read a file underneath the sys object
@@ -159,13 +164,19 @@ pub trait SysClass: Sized {
     }
 
     /// Parse a number from a file underneath the sys object
-    fn parse_file<F: FromStr, P: AsRef<Path>>(&self, name: P) -> Result<F> where F::Err: Display {
-        self.read_file(name.as_ref())?.trim().parse().map_err(|err| {
-            Error::new(
-                ErrorKind::InvalidData,
-                format!("{}: {}", name.as_ref().display(), err)
-            )
-        })
+    fn parse_file<F: FromStr, P: AsRef<Path>>(&self, name: P) -> Result<F>
+    where
+        F::Err: Display,
+    {
+        self.read_file(name.as_ref())?
+            .trim()
+            .parse()
+            .map_err(|err| {
+                Error::new(
+                    ErrorKind::InvalidData,
+                    format!("{}: {}", name.as_ref().display(), err),
+                )
+            })
     }
 
     /// Read a file underneath the sys object and trim whitespace

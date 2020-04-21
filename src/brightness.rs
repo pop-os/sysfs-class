@@ -1,5 +1,5 @@
+use crate::SysClass;
 use std::io::Result;
-use SysClass;
 
 pub trait Brightness: SysClass {
     trait_method!(brightness parse_file u64);
