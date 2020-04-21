@@ -124,7 +124,7 @@ pub trait SysClass: Sized {
     }
 
     /// Retrieve all of the object instances of a sys class, with a boxed iterator
-    fn iter() -> Box<Iterator<Item = Result<Self>>>
+    fn iter() -> Box<dyn Iterator<Item = Result<Self>>>
     where
         Self: 'static,
     {

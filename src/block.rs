@@ -2,7 +2,7 @@ use crate::SysClass;
 use std::io::Result;
 use std::path::{Path, PathBuf};
 
-pub type SlaveIter = Box<Iterator<Item = Result<PathBuf>>>;
+pub type SlaveIter = Box<dyn Iterator<Item = Result<PathBuf>>>;
 
 /// A block device in /sys/class/block
 #[derive(Clone, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
