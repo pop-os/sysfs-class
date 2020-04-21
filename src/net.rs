@@ -1,10 +1,10 @@
+use crate::SysClass;
 use std::io::Result;
 use std::path::{Path, PathBuf};
-use SysClass;
 
 #[derive(Clone)]
 pub struct Net {
-    path: PathBuf
+    path: PathBuf,
 }
 
 impl SysClass for Net {

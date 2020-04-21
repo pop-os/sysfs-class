@@ -2,6 +2,7 @@
 name = "sysfs-class"
 version = "0.1.2"
 authors = ["Jeremy Soller <jeremy@system76.com>"]
+edition = "2018"
 description = "Rust library for viewing /sys/class in an object-oriented format"
 license = "MIT"
 repository = "https://github.com/pop-os/sysfs-class"

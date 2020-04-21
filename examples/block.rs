@@ -1,6 +1,5 @@
-extern crate sysfs_class;
-use sysfs_class::{Block, SysClass};
 use std::io;
+use sysfs_class::{Block, SysClass};
 
 fn main() -> io::Result<()> {
     for block in Block::all()? {

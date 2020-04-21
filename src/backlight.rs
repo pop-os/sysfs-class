@@ -1,11 +1,11 @@
+use crate::{Brightness, SysClass};
 use std::io::Result;
 use std::path::{Path, PathBuf};
-use {Brightness, SysClass};
 
 /// Fetch and modify brightness values of backlight controls.
 #[derive(Clone)]
 pub struct Backlight {
-    path: PathBuf
+    path: PathBuf,
 }
 
 impl SysClass for Backlight {

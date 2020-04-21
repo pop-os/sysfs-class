@@ -1,7 +1,6 @@
+use crate::SysClass;
 use std::io::Result;
 use std::path::{Path, PathBuf};
-
-use SysClass;
 
 pub use self::fan::HwMonFan;
 mod fan;

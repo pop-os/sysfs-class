@@ -1,6 +1,5 @@
-extern crate sysfs_class;
-use sysfs_class::{Net, SysClass};
 use std::io;
+use sysfs_class::{Net, SysClass};
 
 fn main() -> io::Result<()> {
     for dev in Net::iter() {
@@ -11,8 +10,14 @@ fn main() -> io::Result<()> {
         println!("    Duplex: {:?}", dev.duplex());
 
         let statistics = dev.statistics();
-        println!("    RX: {} MiB", statistics.rx_bytes().unwrap() / (1024 * 1024));
-        println!("    TX: {} MiB", statistics.tx_bytes().unwrap() / (1024 * 1024));
+        println!(
+            "    RX: {} MiB",
+            statistics.rx_bytes().unwrap() / (1024 * 1024)
+        );
+        println!(
+            "    TX: {} MiB",
+            statistics.tx_bytes().unwrap() / (1024 * 1024)
+        );
     }
 
     Ok(())

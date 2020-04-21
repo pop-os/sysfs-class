@@ -1,6 +1,5 @@
-extern crate sysfs_class;
-use sysfs_class::{PciDevice, PciDriver, SysClass};
 use std::io;
+use sysfs_class::{PciDevice, PciDriver, SysClass};
 
 fn main() -> io::Result<()> {
     for dev in PciDevice::all()? {

@@ -1,6 +1,5 @@
+use crate::{HwMon, SysClass};
 use std::io::Result;
-
-use {HwMon, SysClass};
 
 pub struct HwMonPwm<'a> {
     hwmon: &'a HwMon,
@@ -9,10 +8,7 @@ pub struct HwMonPwm<'a> {
 
 impl<'a> HwMonPwm<'a> {
     pub fn new(hwmon: &'a HwMon, id: u64) -> Result<Self> {
-        let s = Self {
-            hwmon,
-            id
-        };
+        let s = Self { hwmon, id };
 
         s.input()?;
 
